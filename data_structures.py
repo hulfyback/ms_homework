@@ -4,12 +4,24 @@ class Quote:
 
     def __init__(self, quantity, price):
         try:
+<<<<<<< HEAD
             if quantity.__class__() != 0:
+=======
+            if isinstance(quantity, int):
+                self.quantity = quantity
+            else:
+>>>>>>> mzs-subtask-a
                 raise errors.NotAnIntegerError
             else:
                 self.quantity = quantity
 
+<<<<<<< HEAD
             if price.__class__() != 0 or price.__class__() != 0.0:
+=======
+            if isinstance(price, float) or isinstance(price, int):
+                self.price = price
+            else:
+>>>>>>> mzs-subtask-a
                 raise errors.NotANumberError
             else:
                 self.price = price
