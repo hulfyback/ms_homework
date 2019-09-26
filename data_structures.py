@@ -48,3 +48,17 @@ class OrderBook:
                 self.quotes.append(quote)
         except TypeError:
             print('Error: Type of the argument must be Quote')
+
+class MergedBook:
+    def __init__(self, name):
+        self.name = name
+        self.quotes = []
+
+    def add_orderbook(self, orderbook):
+        for quote in orderbook:
+            for i in len(self.quotes - 1):
+                if quote.price == self.quotes[i].price:
+                    self.quotes.insert(i, quote)
+                    break
+                if i == len(self.quotes - 1):
+                    self.quotes.append(quote)
