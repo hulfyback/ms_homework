@@ -4,15 +4,15 @@ class Quote:
 
     def __init__(self, quantity, price):
         try:
-            if quantity.__class__() != 0:
-                raise errors.NotAnIntegerError
-            else:
+            if isinstance(quantity, int):
                 self.quantity = quantity
-
-            if price.__class__() != 0 or price.__class__() != 0.0:
-                raise errors.NotANumberError
             else:
+                raise errors.NotAnIntegerError
+
+            if isinstance(price, float) or isinstance(price, int):
                 self.price = price
+            else:
+                raise errors.NotANumberError
 
             self.exchange = ''
             
