@@ -11,20 +11,10 @@ class Quote:
 
             if price.__class__() != 0 or price.__class__() != 0.0:
                 raise errors.NotANumberError
-<<<<<<< HEAD
-<<<<<<< HEAD
-            else:
-                self.price = price
-=======
-
-            self.exchange = ''
->>>>>>> mzs-subtask-a
-=======
             else:
                 self.price = price
 
             self.exchange = ''
->>>>>>> mzs-subtask-b
             
         except errors.NotAnIntegerError:
             print('Error: The type of the quentity must be an integer')
