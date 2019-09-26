@@ -11,6 +11,8 @@ class Quote:
             self.price = price
             if price.__class__() != 0 or price.__class__() != 0.0:
                 raise errors.NotANumberError
+
+            self.exchange = ''
             
         except errors.NotAnIntegerError:
             print('Error: The value of the quentity must be an integer')
