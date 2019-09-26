@@ -58,10 +58,45 @@ class MergedBook:
         self.quotes = []
 
     def add_orderbook(self, orderbook):
-        for quote in orderbook:
-            for i in len(self.quotes - 1):
-                if quote.price == self.quotes[i].price:
-                    self.quotes.insert(i, quote)
+        for quote in orderbook.quotes:
+            if self.quotes == []:
+                self.quotes.append(quote)
+            else:
+                i_quotes = iter(self.quotes)
+                indexes = iter(range(len(self.quotes) - 1))
+                while True:
+                    try:
+                        next_index = next(indexes)
+                        nxt = next(i_quotes)
+                        if nxt.price == quote.price:
+                            self.quotes.insert(next_index + 1, quote)
+                            break
+                    except StopIteration:
+                        self.quotes.append(quote)
+                        break
+
+
+    def __repr__(self):
+        if self.quotes == []:
+            return '()'
+        else:
+            merged_book_repr = ''
+            sub_quotes_repr = '('
+            i_quotes = iter(self.quotes)
+            current_quote = next(i_quotes)
+            sub_quotes_repr += repr(current_quote)
+            while True:
+                try:
+                    nxt = next(i_quotes)
+                    if nxt.price == current_quote.price:
+                        sub_quotes_repr += f',{nxt}'
+                    else:
+                        sub_quotes_repr += ')'
+                        merged_book_repr += f'{sub_quotes_repr} | '
+                        current_quote = nxt
+                        sub_quotes_repr = f'({current_quote}'
+                except StopIteration:
+                    sub_quotes_repr += ')'
+                    merged_book_repr += f'{sub_quotes_repr}'
                     break
-                if i == len(self.quotes - 1):
-                    self.quotes.append(quote)
+            return merged_book_repr
