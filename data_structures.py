@@ -98,8 +98,7 @@ class MergedBook:
                         self.quotes.append(quote)
                         break
 
-
-    def __repr__(self):
+    def __str__(self):
         if self.quotes == []:
             return '()'
         else:
