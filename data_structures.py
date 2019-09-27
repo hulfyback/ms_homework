@@ -1,4 +1,5 @@
 import errors
+import collections
 
 
 class Quote:
@@ -45,6 +46,12 @@ class Quote:
         except ValueError:
             print('Error: The price of the quotes must be equals')
 
+    def __radd__(self, other_quote):
+        if other_quote == 0:
+            return self
+        else:
+            return self.__add__(other_quote)
+
     def __str__(self):
         return f'{self.quantity}@{self.price}'
 
@@ -87,6 +94,24 @@ class MergedBook:
     def __init__(self, name):
         self.name = name
         self.quotes = []
+
+    def add_orderbook(self, orderbook):
+        for quote in orderbook.quotes:
+            if self.quotes == []:
+                self.quotes.append(quote)
+            else:
+                i_quotes = iter(self.quotes)
+                indexes = iter(range(len(self.quotes) - 1))
+                while True:
+                    try:
+                        next_index = next(indexes)
+                        nxt = next(i_quotes)
+                        if nxt.price == quote.price:
+                            self.quotes.insert(next_index + 1, quote)
+                            break
+                    except StopIteration:
+                        self.quotes.append(quote)
+                        break
 
     def __str__(self):
         if self.quotes == []:
@@ -132,5 +157,7 @@ class MergedBook:
                         break
 
     def merge_quotes(self):
-        pass
-  
+        merged_quotes = collections.defaultdict(list)
+        for quote in self.quotes:
+            merged_quotes[quote.price].append(quote)
+        return merged_quotes
