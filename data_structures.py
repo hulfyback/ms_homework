@@ -121,7 +121,7 @@ class MergedBook:
             sub_quotes_repr = '('
             i_quotes = iter(self.quotes)
             current_quote = next(i_quotes)
-            sub_quotes_repr += repr(current_quote)
+            sub_quotes_repr += str(current_quote)
             while True:
                 try:
                     nxt = next(i_quotes)
@@ -160,4 +160,9 @@ class MergedBook:
         merged_quotes = collections.defaultdict(list)
         for quote in self.quotes:
             merged_quotes[quote.price].append(quote)
-        return merged_quotes
+        new_order_book = OrderBook(self.name)
+        for quote in merged_quotes.values():
+            new_order_book.add_quote(sum(quote))
+        new_merged_book = MergedBook(self.name)
+        new_merged_book.add_orderbook(new_order_book)
+        return new_merged_book
