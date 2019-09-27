@@ -4,16 +4,16 @@ import collections
 
 class Quote:
     
-    def __init__(self, quantity, price):
+    def __init__(self, quantity=0, price=0):
         try:
             if isinstance(quantity, int):
-                if quantity > 0:
+                if quantity >= 0:
                     self.quantity = quantity
                 else:
                     raise errors.NegativeNumberError
     
                 if isinstance(price, float) or isinstance(price, int):
-                    if price > 0:
+                    if price >= 0:
                         self.price = price
                         self.exchange = ''
                     else:
@@ -33,10 +33,9 @@ class Quote:
     def __add__(self, other_quote):
         try:
             if isinstance(other_quote, Quote):
-                if self.price == other_quote.price:
+                if self.price == other_quote.price or min(self.price, other_quote.price) == 0:
                     total_qantity = self.quantity + other_quote.quantity
-                    price = self.price
-                    return Quote(total_qantity, price)
+                    return Quote(total_qantity, max(self.price, other_quote.price))
                 else:
                     raise ValueError
             else:
@@ -157,12 +156,13 @@ class MergedBook:
                         break
 
     def merge_quotes(self):
-        merged_quotes = collections.defaultdict(list)
+        merged_quotes = collections.defaultdict(Quote)
         for quote in self.quotes:
-            merged_quotes[quote.price].append(quote)
+            merged_quotes[quote.price] += quote
+                
         new_order_book = OrderBook(self.name)
         for quote in merged_quotes.values():
-            new_order_book.add_quote(sum(quote))
+            new_order_book.add_quote(quote)
         new_merged_book = MergedBook(self.name)
         new_merged_book.add_orderbook(new_order_book)
         return new_merged_book
