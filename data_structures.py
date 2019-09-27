@@ -2,7 +2,7 @@ import errors
 
 
 class Quote:
-
+    
     def __init__(self, quantity, price):
         try:
             if isinstance(quantity, int):
@@ -17,7 +17,7 @@ class Quote:
                 raise errors.NotANumberError
             
         except errors.NotAnIntegerError:
-            print('Error: The type of the quentity must be integer')
+            print('Error: The type of the quantity must be integer')
         except errors.NotANumberError:
             print('Error: The type of the price must be number')
 
@@ -52,11 +52,18 @@ class OrderBook:
         except TypeError:
             print('Error: The type of the name must be a string')
 
-    def __repr__(self):
-        order_book_repr = ''
-        for quote in self.quotes:
-            order_book_repr += f'{quote} | '
-        return order_book_repr
+    def __str__(self):
+        order_book_str = ''
+        i_quotes = iter(self.quotes)
+        try:
+            order_book_str += f'{next(i_quotes)}'
+        except StopIteration:
+            return f'{self.name}: {order_book_str}'
+        while True:
+            try:
+                order_book_str += f' | {next(i_quotes)}'
+            except StopIteration:
+                return f'{self.name}: {order_book_str}'
 
     def add_quote(self, quote):
         try:
