@@ -45,5 +45,8 @@ class Quote:
         except ValueError:
             print('Error: The price of the quotes must be equals')
 
+    def __radd__(self, other_quote):
+        return self.__add__(other_quote)
+
     def __str__(self):
         return f'{self.quantity}@{self.price}'
