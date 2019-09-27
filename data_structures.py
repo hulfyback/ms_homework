@@ -6,11 +6,17 @@ class Quote:
     def __init__(self, quantity, price):
         try:
             if isinstance(quantity, int):
-                self.quantity = quantity
-
+                if quantity > 0:
+                    self.quantity = quantity
+                else:
+                    raise errors.NegativeNumberError
+    
                 if isinstance(price, float) or isinstance(price, int):
-                    self.price = price
-                    self.exchange = ''
+                    if price > 0:
+                        self.price = price
+                        self.exchange = ''
+                    else:
+                        raise errors.NegativeNumberError
                 else:
                     raise errors.NotAnIntegerError
             else:
@@ -20,6 +26,8 @@ class Quote:
             print('Error: The type of the quentity must be integer')
         except errors.NotANumberError:
             print('Error: The type of the price must be number')
+        except errors.NegativeNumberError:
+            print('Error: Input value must be greater then 0')
 
     def __add__(self, other_quote):
         try:
