@@ -1,56 +1,91 @@
 import errors
+import numbers
 
 
 class Quote:
+    price= 0
     
-    def __init__(self, quantity, price):
-        try:
-            if isinstance(quantity, int):
-                self.quantity = quantity
+    @errors.catch_not_an_int_error
+    @errors.catch_not_a_number_error
+    @errors.catch_negative_number_error
+    def __init__(self, quantity=0, price=0):
+        if isinstance(quantity, int) is False:
+            raise errors.NotAnIntegerError
+        elif isinstance(price, numbers.Number)is False:
+            raise errors.NotANumberError
+        elif quantity < 0 or price < 0:
+            raise errors.NegativeNumberError
+        else:
+            self.quantity = quantity        
+            self.price = price
+            self.exchange = ''            
 
-                if isinstance(price, float) or isinstance(price, int):
-                    self.price = price
-                    self.exchange = ''
-                else:
-                    raise errors.NotAnIntegerError
-            else:
-                raise errors.NotANumberError
-            
-        except errors.NotAnIntegerError:
-            print('Error: The type of the quantity must be integer')
-        except errors.NotANumberError:
-            print('Error: The type of the price must be number')
-
+    @errors.catch_type_error(errors.ErrorMessages.QUOTE)
+    @errors.catch_value_error
     def __add__(self, other_quote):
-        try:
-            if isinstance(other_quote, Quote):
-                if self.price == other_quote.price:
-                    total_qantity = self.quantity + other_quote.quantity
-                    price = self.price
-                    return Quote(total_qantity, price)
-                else:
-                    raise ValueError
-            else:
-                raise TypeError
-        except TypeError:
-            print('Error: The type of the argument must be Quote')
-        except ValueError:
-            print('Error: The price of the quotes must be equals')
+        if isinstance(other_quote, Quote) is False:
+            raise TypeError
+        elif self.price != other_quote.price or min(self.price, other_quote.price) != 0:
+            raise ValueError
+        else:
+            total_qantity = self.quantity + other_quote.quantity
+            return Quote(total_qantity, max(self.price, other_quote.price))
+
+    @errors.catch_type_error(errors.ErrorMessages.QUOTE)
+    def __radd__(self, other_quote):
+        if other_quote == 0:
+            return self
+        elif isinstance(other_quote, Quote) is False:
+            raise TypeError
+        else:
+            return self.__add__(other_quote)
 
     def __str__(self):
         return f'{self.quantity}@{self.price}'
 
+    @errors.catch_type_error(errors.ErrorMessages.QUOTE)
+    def __eq__(self, other_quote):
+        if isinstance(other_quote, Quote) != True:
+            raise TypeError
+        else:
+            return not self.price < other_quote.price and not other_quote.price < self.price
+
+    @errors.catch_type_error(errors.ErrorMessages.QUOTE)
+    def __ge__(self, other_quote):
+        if isinstance(other_quote, Quote) != True:
+            raise TypeError
+        else:
+            return not self.price < other_quote.price
+
+    @errors.catch_type_error(errors.ErrorMessages.QUOTE)
+    def __le__(self, other_quote):
+        if isinstance(other_quote, Quote) != True:
+            raise TypeError
+        else:
+            return not other_quote.price < self.price
+
+    @errors.catch_type_error(errors.ErrorMessages.QUOTE)
+    def __gt__(self, other_quote):
+        if isinstance(other_quote, Quote) != True:
+            raise TypeError
+        else:
+            return other_quote.price < self.price
+
+    @errors.catch_type_error(errors.ErrorMessages.QUOTE)
+    def __lt__(self, other_quote):
+        if isinstance(other_quote, Quote) != True:
+            raise TypeError
+        else:
+            return self.price < other_quote.price
 class OrderBook:
 
+    @errors.catch_type_error(errors.ErrorMessages.STRING)
     def __init__(self, name):
-        try:
-            if isinstance(name, str):
-                self.name = name
-                self.quotes = []
-            else: 
-                raise TypeError
-        except TypeError:
-            print('Error: The type of the name must be a string')
+        if isinstance(name, str):
+            self.name = name
+            self.quotes = []
+        else: 
+            raise TypeError
 
     def __str__(self):
         order_book_str = ''
@@ -65,12 +100,10 @@ class OrderBook:
             except StopIteration:
                 return f'{self.name}: {order_book_str}'
 
+    @errors.catch_type_error(errors.ErrorMessages.QUOTE)
     def add_quote(self, quote):
-        try:
-            if isinstance(quote, Quote):
-                quote.exchange = self.name
-                self.quotes.append(quote)
-            else:
-                raise TypeError
-        except TypeError:
-            print('Error: Type of the argument must be Quote')
+        if isinstance(quote, Quote):
+            quote.exchange = self.name
+            self.quotes.append(quote)
+        else:
+            raise TypeError
