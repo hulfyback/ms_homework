@@ -1,3 +1,6 @@
+import errors
+
+
 class Quote:
     price= None
     
@@ -14,11 +17,11 @@ class Quote:
                 self.price = price
                 self.exchange = ''            
         except errors.NotAnIntegerError:
-            print('Error: The type of the quantity must be integer')
+            print(errors.NotANumberError.error_msg)
         except errors.NotANumberError:
-            print('Error: The type of the price must be number')
+            print(errors.NotANumberError.error_msg)
         except errors.NegativeNumberError:
-            print('Error: Input value must be greater then 0')
+            print(errors.NegativeNumberError.error_msg)
 
     def __add__(self, other_quote):
         try:
@@ -30,7 +33,7 @@ class Quote:
                 total_qantity = self.quantity + other_quote.quantity
                 return Quote(total_qantity, max(self.price, other_quote.price))
         except TypeError:
-            print('Error: The type of the argument must be Quote')
+            print(errors.ErrorMessages.QUOTE)
         except ValueError:
             print('Error: The price of the quotes must be equals')
 
@@ -43,7 +46,7 @@ class Quote:
             else:
                 return self.__add__(other_quote)
         except TypeError:
-            print('Error: The type of the argument must be Quote')
+            print(errors.ErrorMessages.QUOTE)
 
     def __str__(self):
         return f'{self.quantity}@{self.price}'
@@ -55,7 +58,7 @@ class Quote:
             else:
                 return not self.price < other_quote.price and not other_quote.price < self.price
         except TypeError:
-            print('Error: The type of the argument must be Quote')
+            print(errors.ErrorMessages.QUOTE)
 
     def __ge__(self, other_quote):
         try:
@@ -64,7 +67,7 @@ class Quote:
             else:
                 return not self.price < other_quote.price
         except TypeError:
-            print('Error: The type of the argument must be Quote')
+            print(errors.ErrorMessages.QUOTE)
 
     def __le__(self, other_quote):
         try:
@@ -73,7 +76,7 @@ class Quote:
             else:
                 return not other_quote.price < self.price
         except TypeError:
-            print('Error: The type of the argument must be Quote')
+            print(errors.ErrorMessages.QUOTE)
 
     def __gt__(self, other_quote):
         try:
@@ -82,7 +85,7 @@ class Quote:
             else:
                 return other_quote.price < self.price
         except TypeError:
-            print('Error: The type of the argument must be Quote')
+            print(errors.ErrorMessages.QUOTE)
 
     def __lt__(self, other_quote):
         try:
@@ -91,4 +94,4 @@ class Quote:
             else:
                 return self.price < other_quote.price
         except TypeError:
-            print('Error: The type of the argument must be Quote')
+            print(errors.ErrorMessages.QUOTE)
