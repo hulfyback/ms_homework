@@ -82,7 +82,8 @@ class OrderBook:
     def add_quote(self, quote):
         try:
             if isinstance(quote, Quote):
-                quote.exchange = self.name
+                if quote.exchange == '':
+                    quote.exchange = self.name
                 self.quotes.append(quote)
             else:
                 raise TypeError
