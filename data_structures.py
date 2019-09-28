@@ -22,24 +22,28 @@ class Quote:
 
     def __add__(self, other_quote):
         try:
-            if isinstance(other_quote, Quote):
-                if self.price == other_quote.price or min(self.price, other_quote.price) == 0:
-                    total_qantity = self.quantity + other_quote.quantity
-                    return Quote(total_qantity, max(self.price, other_quote.price))
-                else:
-                    raise ValueError
-            else:
+            if isinstance(other_quote, Quote) is False:
                 raise TypeError
+            elif self.price != other_quote.price or min(self.price, other_quote.price) != 0:
+                raise ValueError
+            else:
+                total_qantity = self.quantity + other_quote.quantity
+                return Quote(total_qantity, max(self.price, other_quote.price))
         except TypeError:
             print('Error: The type of the argument must be Quote')
         except ValueError:
             print('Error: The price of the quotes must be equals')
 
     def __radd__(self, other_quote):
-        if other_quote == 0:
-            return self
-        else:
-            return self.__add__(other_quote)
+        try:
+            if other_quote == 0:
+                return self
+            elif isinstance(other_quote, Quote) is False:
+                raise TypeError
+            else:
+                return self.__add__(other_quote)
+        except TypeError:
+            print('Error: The type of the argument must be Quote')
 
     def __str__(self):
         return f'{self.quantity}@{self.price}'
