@@ -3,23 +3,16 @@ class Quote:
     
     def __init__(self, quantity=0, price=0):
         try:
-            if isinstance(quantity, int):
-                if quantity >= 0:
-                    self.quantity = quantity
-                else:
-                    raise errors.NegativeNumberError
-    
-                if isinstance(price, float) or isinstance(price, int):
-                    if price >= 0:
-                        self.price = price
-                        self.exchange = ''
-                    else:
-                        raise errors.NegativeNumberError
-                else:
-                    raise errors.NotAnIntegerError
-            else:
+            if isinstance(quantity, int) is False:
+                raise errors.NotAnIntegerError
+            elif isinstance(price, float) is False or isinstance(price, int) is False:
                 raise errors.NotANumberError
-            
+            elif quantity < 0 or price < 0:
+                raise errors.NegativeNumberError
+            else:
+                self.quantity = quantity        
+                self.price = price
+                self.exchange = ''            
         except errors.NotAnIntegerError:
             print('Error: The type of the quantity must be integer')
         except errors.NotANumberError:
