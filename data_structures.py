@@ -3,6 +3,7 @@ import collections
 
 
 class Quote:
+    price= None
     
     def __init__(self, quantity=0, price=0):
         try:
@@ -53,6 +54,51 @@ class Quote:
 
     def __str__(self):
         return f'{self.quantity}@{self.price}'
+
+    def __eq__(self, other_quote):
+        try:
+            if isinstance(other_quote, Quote) != True:
+                raise TypeError
+            else:
+                return not self.price < other_quote.price and not other_quote.price < self.price
+        except TypeError:
+            print('Error: The type of the argument must be Quote')
+
+    def __ge__(self, other_quote):
+        try:
+            if isinstance(other_quote, Quote) != True:
+                raise TypeError
+            else:
+                return not self.price < other_quote.price
+        except TypeError:
+            print('Error: The type of the argument must be Quote')
+
+    def __le__(self, other_quote):
+        try:
+            if isinstance(other_quote, Quote) != True:
+                raise TypeError
+            else:
+                return not other_quote.price < self.price
+        except TypeError:
+            print('Error: The type of the argument must be Quote')
+
+    def __gt__(self, other_quote):
+        try:
+            if isinstance(other_quote, Quote) != True:
+                raise TypeError
+            else:
+                return other_quote.price < self.price
+        except TypeError:
+            print('Error: The type of the argument must be Quote')
+
+    def __lt__(self, other_quote):
+        try:
+            if isinstance(other_quote, Quote) != True:
+                raise TypeError
+            else:
+                return self.price < other_quote.price
+        except TypeError:
+            print('Error: The type of the argument must be Quote')
 
 class OrderBook:
 
@@ -164,10 +210,38 @@ class MergedBook:
         new_order_book = OrderBook(self.name)
         for quote in merged_quotes.values():
             new_order_book.add_quote(quote)
-        new_merged_book = MergedBook(self.name)
-        new_merged_book.add_orderbook(new_order_book)
-        return new_merged_book
+        new_order_book.quotes.sort(key=Quote.price)
+        self.quotes = []
+        self.add_orderbook(new_order_book)
+        del(new_order_book)
+        return self
 
     def simulateBuy(self, quantity, price):
-        pass
-    
+        try:
+            if isinstance(quantity, int) != True:
+                raise errors.NotAnIntegerError
+            elif quantity < 0:
+                raise errors.NegativeNumberError
+            elif isinstance(price, int) or isinstance(price, float) != True:
+                raise errors.NotANumberError
+            elif price < 0:
+                raise errors.NegativeNumberError
+            else:
+                self.merge_quotes()
+                while len(self.quotes) > 0:
+                    current_quote = self.quotes[0]
+                    if current_quote.price > price:
+                        return self
+                    elif current_quote.quantity > quantity:
+                        current_quote.quantity -= quantity
+                        return self
+                    else:
+                        price -= current_quote.price
+                        quantity -= current_quote.quantity
+                        self.quotes.remove(current_quote)
+        except errors.NotAnIntegerError:
+            print('Error: Type of the argument `quantity` must be integer')
+        except errors.NotANumberError:
+            print('Error: Type of the argument `price` must be number')
+        except errors.NegativeNumberError:
+            print('Error: Value of the arguments must be greater then 0')
