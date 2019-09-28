@@ -80,16 +80,14 @@ class Quote:
             return self.price < other_quote.price
 
 class OrderBook:
-
+    
+    @errors.catch_type_error(errors.ErrorMessages.STRING)
     def __init__(self, name):
-        try:
-            if isinstance(name, str):
-                self.name = name
-                self.quotes = []
-            else: 
-                raise TypeError
-        except TypeError:
-            print('Error: The type of the name must be a string')
+        if isinstance(name, str):
+            self.name = name
+            self.quotes = []
+        else: 
+            raise TypeError
 
     def __str__(self):
         order_book_str = ''
@@ -104,16 +102,13 @@ class OrderBook:
             except StopIteration:
                 return f'{self.name}: {order_book_str}'
 
+    @errors.catch_type_error(errors.ErrorMessages.QUOTE)
     def add_quote(self, quote):
-        try:
-            if isinstance(quote, Quote):
-                if quote.exchange == '':
-                    quote.exchange = self.name
-                self.quotes.append(quote)
-            else:
-                raise TypeError
-        except TypeError:
-            print('Error: Type of the argument must be Quote')
+        if isinstance(quote, Quote):
+            quote.exchange = self.name
+            self.quotes.append(quote)
+        else:
+            raise TypeError
 
 class MergedBook:
     def __init__(self, name):
