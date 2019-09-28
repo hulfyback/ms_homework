@@ -19,7 +19,7 @@ class Quote:
         else:
             self.quantity = quantity        
             self.price = price
-            self.exchange = ''            
+            self.exchange = ''
 
     @errors.catch_type_error(errors.ErrorMessages.QUOTE)
     @errors.catch_value_error
@@ -184,6 +184,34 @@ class MergedBook:
         new_order_book = OrderBook(self.name)
         for quote in merged_quotes.values():
             new_order_book.add_quote(quote)
-        new_merged_book = MergedBook(self.name)
-        new_merged_book.add_orderbook(new_order_book)
-        return new_merged_book
+        new_order_book.quotes.sort(key=Quote.price)
+        self.quotes = []
+        self.add_orderbook(new_order_book)
+        del(new_order_book)
+        return self
+
+    @errors.catch_negative_number_error
+    @errors.catch_not_a_number_error
+    @errors.catch_not_an_int_error
+    def simulateBuy(self, quantity, price):
+        if isinstance(quantity, int) != True:
+            raise errors.NotAnIntegerError
+        elif quantity < 0:
+            raise errors.NegativeNumberError
+        elif isinstance(price, int) or isinstance(price, float) != True:
+            raise errors.NotANumberError
+        elif price < 0:
+            raise errors.NegativeNumberError
+        else:
+            self.merge_quotes()
+            while len(self.quotes) > 0:
+                current_quote = self.quotes[0]
+                if current_quote.price > price:
+                    return self
+                elif current_quote.quantity > quantity:
+                    current_quote.quantity -= quantity
+                    return self
+                else:
+                    price -= current_quote.price
+                    quantity -= current_quote.quantity
+                    self.quotes.remove(current_quote)
