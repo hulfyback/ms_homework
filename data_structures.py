@@ -4,7 +4,7 @@ import numbers
 
 
 class Quote:
-    price= 0
+    price = None
     
     @errors.catch_not_an_int_error
     @errors.catch_not_a_number_error
@@ -26,12 +26,12 @@ class Quote:
     def __add__(self, other_quote):
         if isinstance(other_quote, Quote) is False:
             raise TypeError
-        elif self.price != other_quote.price or min(self.price, other_quote.price) != 0:
-            raise ValueError
-        else:
+        elif self.price == other_quote.price or min(self.price, other_quote.price) == 0:            
             total_qantity = self.quantity + other_quote.quantity
             return Quote(total_qantity, max(self.price, other_quote.price))
-
+        else:
+            raise ValueError
+    
     @errors.catch_type_error(errors.ErrorMessages.QUOTE)
     def __radd__(self, other_quote):
         if other_quote == 0:
@@ -115,48 +115,30 @@ class MergedBook:
         self.name = name
         self.quotes = []
 
-    def add_orderbook(self, orderbook):
-        for quote in orderbook.quotes:
-            if self.quotes == []:
-                self.quotes.append(quote)
-            else:
-                i_quotes = iter(self.quotes)
-                indexes = iter(range(len(self.quotes) - 1))
-                while True:
-                    try:
-                        next_index = next(indexes)
-                        nxt = next(i_quotes)
-                        if nxt.price == quote.price:
-                            self.quotes.insert(next_index + 1, quote)
-                            break
-                    except StopIteration:
-                        self.quotes.append(quote)
-                        break
-
     def __str__(self):
         if self.quotes == []:
             return '()'
         else:
-            merged_book_repr = ''
-            sub_quotes_repr = '('
+            merged_book_str = ''
+            sub_quotes_str = '('
             i_quotes = iter(self.quotes)
             current_quote = next(i_quotes)
-            sub_quotes_repr += str(current_quote)
+            sub_quotes_str += str(current_quote)
             while True:
                 try:
                     nxt = next(i_quotes)
                     if nxt.price == current_quote.price:
-                        sub_quotes_repr += f',{nxt}'
+                        sub_quotes_str += f',{nxt}'
                     else:
-                        sub_quotes_repr += ')'
-                        merged_book_repr += f'{sub_quotes_repr} | '
+                        sub_quotes_str += ')'
+                        merged_book_str += f'{sub_quotes_str} | '
                         current_quote = nxt
-                        sub_quotes_repr = f'({current_quote}'
+                        sub_quotes_str = f'({current_quote}'
                 except StopIteration:
-                    sub_quotes_repr += ')'
-                    merged_book_repr += f'{sub_quotes_repr}'
+                    sub_quotes_str += ')'
+                    merged_book_str += f'{sub_quotes_str}'
                     break
-            return merged_book_repr
+            return merged_book_str
 
     def add_orderbook(self, orderbook):
         for quote in orderbook.quotes:
@@ -175,6 +157,7 @@ class MergedBook:
                     except StopIteration:
                         self.quotes.append(quote)
                         break
+        self.merge_quotes()
 
     def merge_quotes(self):
         merged_quotes = collections.defaultdict(Quote)
@@ -194,16 +177,15 @@ class MergedBook:
     @errors.catch_not_a_number_error
     @errors.catch_not_an_int_error
     def simulateBuy(self, quantity, price):
-        if isinstance(quantity, int) != True:
+        if isinstance(quantity, int) is False:
             raise errors.NotAnIntegerError
         elif quantity < 0:
             raise errors.NegativeNumberError
-        elif isinstance(price, int) or isinstance(price, float) != True:
+        elif isinstance(price, numbers.Number) is False:
             raise errors.NotANumberError
         elif price < 0:
             raise errors.NegativeNumberError
         else:
-            self.merge_quotes()
             while len(self.quotes) > 0:
                 current_quote = self.quotes[0]
                 if current_quote.price > price:
@@ -215,3 +197,33 @@ class MergedBook:
                     price -= current_quote.price
                     quantity -= current_quote.quantity
                     self.quotes.remove(current_quote)
+
+ob1 = OrderBook('LSE')
+ob2 = OrderBook('TRQS')
+ob3 = OrderBook('BATS')
+
+ob1.add_quote(Quote(100, 0.1))
+ob1.add_quote(Quote(200, 0.2))
+ob1.add_quote(Quote(300, 0.3))
+
+ob2.add_quote(Quote(100, 0.1))
+ob2.add_quote(Quote(200, 0.35))
+ob2.add_quote(Quote(300, 0.4))
+
+ob3.add_quote(Quote(100, 0.15))
+ob3.add_quote(Quote(400, 0.3))
+ob3.add_quote(Quote(200, 0.5))
+ob3.add_quote(Quote(300, 0.6))
+
+mb = MergedBook('New Merged Book')
+
+mb.add_orderbook(ob1)
+mb.add_orderbook(ob2)
+mb.add_orderbook(ob3)
+
+mb.simulateBuy(100, 0.1)
+mb.simulateBuy(250, 0.25)
+mb.simulateBuy(250, 0.25)
+mb.simulateBuy(250, 0.25)
+
+print(mb)
