@@ -3,6 +3,13 @@ import numbers
 
 
 class Quote:
+    '''
+    Datastructure to represent a quote in an order book.
+
+    Attributes:
+        quantity (int): Quantity of the quotes.
+        price (float): Price of the quotes.
+    '''
     quantity = None
     price = None
     
@@ -24,6 +31,20 @@ class Quote:
     @errors.catch_type_error(errors.ErrorMessages.QUOTE)
     @errors.catch_value_error
     def __add__(self, other_quote):
+        '''
+        Add two quotes. Two quotes are allowed to add if they are on the same price.
+
+        Args:
+            other_quote: Quote to be added.
+
+        Returns: 
+            A new quote. Its price equals to the price of the price of the other_quote, 
+            and its quantity is the sum of the quantities of the quotes.
+
+        Raises:
+            TypeError: an error occured if the argument other_quote is not a Quote.
+            ValueError: an error occured if the prices of the two quotes are not equals.
+        '''
         if isinstance(other_quote, Quote) is False:
             raise TypeError
         elif self.price == other_quote.price or min(self.price, other_quote.price) == 0:            
