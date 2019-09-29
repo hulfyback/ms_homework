@@ -32,7 +32,7 @@ def catch_type_error(postfix):
             try:
                 return func(*args, **kwargs)
             except TypeError:
-                print(ErrorMessages.QUOTE)
+                print(postfix)
         return wrapper_func
     return outer_wrapper_func
 

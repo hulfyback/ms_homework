@@ -4,6 +4,7 @@ import numbers
 
 
 class Quote:
+    quantity = None
     price = None
     
     @errors.catch_not_an_int_error
@@ -157,7 +158,7 @@ class MergedBook:
                     except StopIteration:
                         self.quotes.append(quote)
                         break
-        self.merge_quotes()
+        
 
     def merge_quotes(self):
         merged_quotes = collections.defaultdict(Quote)
@@ -186,6 +187,7 @@ class MergedBook:
         elif price < 0:
             raise errors.NegativeNumberError
         else:
+            self.merge_quotes()
             while len(self.quotes) > 0:
                 current_quote = self.quotes[0]
                 if current_quote.price > price:
@@ -197,33 +199,3 @@ class MergedBook:
                     price -= current_quote.price
                     quantity -= current_quote.quantity
                     self.quotes.remove(current_quote)
-
-ob1 = OrderBook('LSE')
-ob2 = OrderBook('TRQS')
-ob3 = OrderBook('BATS')
-
-ob1.add_quote(Quote(100, 0.1))
-ob1.add_quote(Quote(200, 0.2))
-ob1.add_quote(Quote(300, 0.3))
-
-ob2.add_quote(Quote(100, 0.1))
-ob2.add_quote(Quote(200, 0.35))
-ob2.add_quote(Quote(300, 0.4))
-
-ob3.add_quote(Quote(100, 0.15))
-ob3.add_quote(Quote(400, 0.3))
-ob3.add_quote(Quote(200, 0.5))
-ob3.add_quote(Quote(300, 0.6))
-
-mb = MergedBook('New Merged Book')
-
-mb.add_orderbook(ob1)
-mb.add_orderbook(ob2)
-mb.add_orderbook(ob3)
-
-mb.simulateBuy(100, 0.1)
-mb.simulateBuy(250, 0.25)
-mb.simulateBuy(250, 0.25)
-mb.simulateBuy(250, 0.25)
-
-print(mb)
