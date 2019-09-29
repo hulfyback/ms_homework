@@ -69,3 +69,11 @@ def catch_negative_number_error(func):
         except NegativeNumberError:
             print(NegativeNumberError.error_msg)
     return wrapper_func
+
+def catch_file_not_found_error(func):
+    def wrapper_func(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except FileNotFoundError:
+            print('Error: File does not exist')
+    return wrapper_func

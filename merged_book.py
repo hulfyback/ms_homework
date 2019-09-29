@@ -1,4 +1,5 @@
 import collections
+import csv
 import numbers
 
 import errors
@@ -85,6 +86,29 @@ class MergedBook:
                             self.quotes.append(quote)
                             break
         
+    @errors.catch_file_not_found_error
+    def read_orderbook_from_csv(self, name, path):
+        '''
+        Add an order book from a csv file.
+
+        Args:
+            name (str): Name of the order book.
+            path (str): Path of the file.
+
+        Returns:
+            None. The order book will be added to the original merged book.
+
+        Raises:
+            FileNotFoundError: An error occured if the file does not exist"
+        '''
+        with open(path, 'r') as file:
+            reader = csv.reader(file)
+
+            header = next(reader)
+            ob = OrderBook(name)
+            for row in reader:
+                ob.add_quote(Quote(int(row[0]), float(row[1])))
+            self.add_orderbook(ob)
 
     def merge_quotes(self):
         '''

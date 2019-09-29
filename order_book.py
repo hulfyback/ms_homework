@@ -1,3 +1,5 @@
+import csv
+
 import errors
 from quote import Quote
 
@@ -79,3 +81,24 @@ class OrderBook:
         else:
             for quote in quotes:
                 self.add_quote(quote)
+
+    @errors.catch_file_not_found_error
+    def read_quotes_from_csv(self, path):
+        '''
+        Add a list of quotes from a csv file.
+
+        Args:
+            path (str): Path of the file.
+
+        Returns:
+            None. The quotes will be added to the original order book.
+
+        Raises:
+            FileNotFoundError: An error occured if the file does not exist"
+        '''
+        with open(path, 'r') as file:
+            reader = csv.reader(file)
+
+            header = next(reader)
+            for row in reader:
+                self.add_quote(Quote(int(row[0]), float(row[1])))
