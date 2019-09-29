@@ -63,6 +63,15 @@ class Quote:
             return self.__add__(other_quote)
 
     def __str__(self):
+        '''
+        Represents the Quote as a string.
+
+        Args:
+            None.
+        
+        Returns:
+            A string e.g.: 100@0.1
+        '''
         return f'{self.quantity}@{self.price}'
 
     @errors.catch_type_error(errors.ErrorMessages.QUOTE)

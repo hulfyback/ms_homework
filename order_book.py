@@ -20,7 +20,7 @@ class OrderBook:
 
     def __str__(self):
         '''
-        Represents the order book in a string.
+        Represents the order book as a string.
 
         Args:
             None.

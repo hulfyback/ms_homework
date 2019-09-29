@@ -8,6 +8,7 @@ class ErrorMessages(Enum):
     QUOTE = f'{msg} Quote'
     STRING = f'{msg} string'
     LIST = f'{msg} list'
+    ORDERBOOK = f'{msg} OrderBook'
     
 class Error(Exception):
     pass
