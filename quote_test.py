@@ -19,3 +19,6 @@ class TestQuote(unittest.TestCase):
 
     def test_quote_to_string(self):
         self.assertEqual(str(self.quote), '100@0.1')
+
+if __name__ == '__main__':
+    unittest.main()        

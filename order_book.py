@@ -32,3 +32,10 @@ class OrderBook:
             self.quotes.append(quote)
         else:
             raise TypeError
+    @errors.catch_type_error(errors.ErrorMessages.LIST)
+    def add_quotes(self, quotes):
+        if isinstance(quotes, list) is False:
+            raise TypeError
+        else:
+            for quote in quotes:
+                self.add_quote(quote)

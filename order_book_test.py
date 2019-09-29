@@ -20,3 +20,6 @@ class TestOrderBook(unittest.TestCase):
         self.order_book.add_quote(self.quote)      
         self.assertEqual(self.order_book.quotes, [self.quote])
         self.assertEqual(self.order_book.name, self.order_book.quotes[0].exchange)
+
+if __name__ == '__main__':
+    unittest.main()   

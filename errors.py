@@ -6,7 +6,8 @@ class ErrorMessages(Enum):
         return str(self.value)
     msg = 'Error: The type of the argument must be '
     QUOTE = f'{msg} Quote'
-    STRING = 'f{msg} string'
+    STRING = f'{msg} string'
+    LIST = f'{msg} list'
     
 class Error(Exception):
     pass
